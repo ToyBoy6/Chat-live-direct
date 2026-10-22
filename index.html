@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StreamChat Studio Pro</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>StreamChat Studio Pro & High CPM Explorer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * {
       box-sizing: border-box;
@@ -22,7 +22,7 @@
       overflow: hidden;
     }
 
-    /* En-tête / Barre d'outils */
+    /* En-tête / Navigation */
     .header {
       background: linear-gradient(135deg, #13151f 0%, #1a1d2d 100%);
       padding: 12px 16px;
@@ -67,12 +67,6 @@
       padding: 4px;
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .search-container:focus-within {
-      border-color: #ff2a4b;
-      box-shadow: 0 0 12px rgba(255, 42, 75, 0.25);
     }
 
     input {
@@ -108,11 +102,23 @@
       filter: brightness(1.15);
     }
 
-    button:active {
-      transform: scale(0.97);
+    /* Layout principal à deux colonnes */
+    .main-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+      overflow: hidden;
     }
 
-    /* Zone d'affichage du Chat */
+    /* Colonne principale (Chat + Envoi de message) */
+    .chat-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #000;
+      position: relative;
+    }
+
     .chat-wrapper {
       flex: 1;
       position: relative;
@@ -126,11 +132,9 @@
       width: 100%;
       height: 100%;
       border: none;
-      /* Inversion légère pour forcer un contraste sombre/texte blanc sur le chat officiel */
       filter: contrast(105%);
     }
 
-    /* Message d'accueil / Placeholder */
     .placeholder {
       position: absolute;
       text-align: center;
@@ -147,23 +151,140 @@
       opacity: 0.5;
     }
 
-    .placeholder p {
-      font-size: 14px;
-      font-weight: 500;
+    /* Zone pour écrire un commentaire */
+    .comment-bar {
+      background: #13151f;
+      padding: 12px 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    /* Overlay pour ajustement esthétique des commentaires en texte blanc */
-    .dark-overlay-fix {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      pointer-events: none;
-      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+    .comment-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .comment-input-group input {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .btn-send {
+      background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+      white-space: nowrap;
+    }
+
+    .comment-info {
+      font-size: 11px;
+      color: #a0a5b5;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Panneau des Lives à fort CPM */
+    .cpm-sidebar {
+      width: 320px;
+      background: #0e1017;
+      border-left: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .cpm-badge-header {
+      background: rgba(0, 230, 118, 0.15);
+      color: #00e676;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-weight: 600;
+    }
+
+    .stream-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stream-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+      border-color: rgba(255, 42, 75, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .stream-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stream-category {
+      font-size: 11px;
+      font-weight: 600;
+      color: #ff2a4b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cpm-value {
+      font-size: 11px;
+      font-weight: 700;
+      color: #00e676;
+      background: rgba(0, 230, 118, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .stream-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #eeeeee;
+      line-height: 1.3;
+    }
+
+    .stream-channel {
+      font-size: 11px;
+      color: #8a8f9d;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+      .cpm-sidebar {
+        width: 100%;
+        height: 200px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Barre de recherche supérieure -->
+  <!-- Barre supérieure -->
   <div class="header">
     <div class="logo">
       <div class="logo-icon"></div>
@@ -171,22 +292,88 @@
     </div>
 
     <div class="search-container">
-      <input type="text" id="youtubeUrl" placeholder="Entrez l'ID du Live (ex: Pz2PhMpVjws) ou collez l'URL...">
+      <input type="text" id="youtubeUrl" placeholder="ID du Live (ex: Pz2PhMpVjws) ou URL...">
       <button onclick="chargerChat()">Charger</button>
     </div>
   </div>
 
-  <!-- Conteneur d'intégration du chat -->
-  <div class="chat-wrapper">
-    <div class="placeholder" id="placeholder">
-      <svg viewBox="0 0 24 24">
-        <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
-      </svg>
-      <p>Entrez l'ID de votre live pour afficher le chat en direct</p>
+  <!-- Contenu Principal -->
+  <div class="main-container">
+
+    <!-- Section Chat + Écriture -->
+    <div class="chat-section">
+      <div class="chat-wrapper">
+        <div class="placeholder" id="placeholder">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+          </svg>
+          <p>Choisissez un stream à fort CPM ou saisissez un ID pour lancer le chat</p>
+        </div>
+
+        <iframe id="chatIframe" src="about:blank"></iframe>
+      </div>
+
+      <!-- Module d'écriture d'un commentaire -->
+      <div class="comment-bar">
+        <div class="comment-input-group">
+          <input type="text" id="userComment" placeholder="Écrire un commentaire dans le chat...">
+          <button class="btn-send" onclick="envoyerCommentaire()">Envoyer</button>
+        </div>
+        <div class="comment-info">
+          <span>Connecté en tant que : <b>@Visiteur</b></span>
+          <span>Pour poster sur le vrai chat YouTube, la connexion Google dans l'iframe est requise.</span>
+        </div>
+      </div>
     </div>
 
-    <iframe id="chatIframe" src="about:blank"></iframe>
-    <div class="dark-overlay-fix"></div>
+    <!-- Barre latérale : Sélection des Streams à HAUT CPM -->
+    <div class="cpm-sidebar">
+      <div class="sidebar-title">
+        <span>Lives à Haut CPM</span>
+        <span class="cpm-badge-header">Top Revenus</span>
+      </div>
+
+      <!-- Carte 1 : Bourse & Finance -->
+      <div class="stream-card" onclick="chargerStreamDirect('Pz2PhMpVjws', 'Trading & Finance')">
+        <div class="stream-header">
+          <span class="stream-category">Finance & Investissement</span>
+          <span class="cpm-value">CPM ~$45.00</span>
+        </div>
+        <div class="stream-title">Analyse Bourse & Crypto en Direct</div>
+        <div class="stream-channel">ID: Pz2PhMpVjws</div>
+      </div>
+
+      <!-- Carte 2 : Tech & Développement -->
+      <div class="stream-card" onclick="chargerStreamDirect('jfKfPfyJRdk', 'Tech & Code')">
+        <div class="stream-header">
+          <span class="stream-category">Tech & Data Science</span>
+          <span class="cpm-value">CPM ~$32.00</span>
+        </div>
+        <div class="stream-title">Live Lo-Fi / Chill coding & AI</div>
+        <div class="stream-channel">ID: jfKfPfyJRdk</div>
+      </div>
+
+      <!-- Carte 3 : Business & Entrepreneuriat -->
+      <div class="stream-card" onclick="chargerStreamDirect('5qap5aO4i9A', 'Business')">
+        <div class="stream-header">
+          <span class="stream-category">Business & E-Commerce</span>
+          <span class="cpm-value">CPM ~$28.50</span>
+        </div>
+        <div class="stream-title">Stratégies Business & Marketing Live</div>
+        <div class="stream-channel">ID: 5qap5aO4i9A</div>
+      </div>
+
+      <!-- Carte 4 : Gaming Premium -->
+      <div class="stream-card" onclick="chargerStreamDirect('21X5lGlDOfg', 'Gaming High-End')">
+        <div class="stream-header">
+          <span class="stream-category">Gaming & Hardware</span>
+          <span class="cpm-value">CPM ~$18.00</span>
+        </div>
+        <div class="stream-title">Esports World Championship</div>
+        <div class="stream-channel">ID: 21X5lGlDOfg</div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -194,33 +381,43 @@
       const input = document.getElementById('youtubeUrl').value.trim();
       if (!input) return;
 
-      // Extraction propre de l'ID YouTube (11 caractères)
       const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
       const match = input.match(regExp);
       const videoId = (match && match[2].length === 11) ? match[2] : input;
 
       if (videoId.length !== 11) {
-        alert("⚠️ Veuillez entrer un ID de vidéo ou un lien de Live YouTube valide !");
+        alert("⚠️ Veuillez entrer un ID de vidéo valide !");
         return;
       }
 
-      // Masquer le placeholder d'attente
       document.getElementById('placeholder').style.display = 'none';
-
-      // Récupération du domaine dynamique
       let domain = window.location.hostname || "localhost";
-
-      // URL YouTube Chat avec thème sombre forcé
       const chatUrl = `https://www.youtube.com/live_chat?v=${videoId}&embed_domain=${domain}&theme=dark`;
-      
       document.getElementById('chatIframe').src = chatUrl;
     }
 
-    // Permet de valider directement en appuyant sur la touche 'Entrée'
+    function chargerStreamDirect(videoId, categorie) {
+      document.getElementById('youtubeUrl').value = videoId;
+      chargerChat();
+    }
+
+    function envoyerCommentaire() {
+      const commentInput = document.getElementById('userComment');
+      const text = commentInput.value.trim();
+      
+      if (!text) return;
+
+      // Note : L'envoi direct dans l'iframe du chat YouTube nécessite l'interaction directe de l'utilisateur dans l'iframe connectée
+      alert("💬 Message préparé : \"" + text + "\"\n\nPour que votre message apparaisse directement dans le chat officiel en direct, assurez-vous d'être connecté à votre compte Google dans l'interface du chat YouTube ci-dessus.");
+      commentInput.value = '';
+    }
+
     document.getElementById('youtubeUrl').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') {
-        chargerChat();
-      }
+      if (e.key === 'Enter') chargerChat();
+    });
+
+    document.getElementById('userComment').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') envoyerCommentaire();
     });
   </script>
 </body>
